@@ -30,7 +30,7 @@ searchCountry = (country, query) => {
 };
 
 getLatLng = req => {
-  var ip = req.headers["x-forwarded-for"] || req.connection.remoteAddress;
+  let ip = req.headers["x-forwarded-for"] || req.connection.remoteAddress;
   console.log(ip);
   return axios
     .get(
@@ -95,6 +95,7 @@ server.post("/api/search", (req, res) => {
     .map(country => searchCountry(country, queryCapitalized))
     .filter(item => item)
     .sort((item1, item2) => {
+      console.log(loc.lat, loc.lng);
       return (
         calculateDistance(item1.lat, item1.lng, loc.lat, loc.lng) -
         calculateDistance(item2.lat, item2.lng, loc.lat, loc.lng)
