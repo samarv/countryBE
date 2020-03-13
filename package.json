@@ -1,0 +1,11 @@
+{
+  "name": "countryBE",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/samarv/countryBE.git",
+  "author": "samarvir <samarvir1996@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
