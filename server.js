@@ -32,6 +32,7 @@ searchCountry = (country, query) => {
 getLatLng = req => {
   let ip = req.headers["x-forwarded-for"] || req.connection.remoteAddress;
   console.log(ip);
+  ip = ip.toString();
   return axios
     .get(
       `http://api.ipstack.com/${ip}?access_key=a1d5abe0fd6709ed6ee80744cc29def2`
@@ -84,6 +85,7 @@ server.post("/api/search", (req, res) => {
   let loc = { lat: 0, lng: 0 };
   getLatLng(req)
     .then(res => {
+      console.log("res", res);
       loc = res;
     })
     .catch(err => {
