@@ -29,27 +29,23 @@ searchCountry = (country, query) => {
   }
 };
 
-getLatLng = req => {
-  let ip = req.headers["x-forwarded-for"] || req.connection.remoteAddress;
-  console.log(ip);
-  ip = ip.toString();
-  return axios
-    .get(
+async function getLatLng(req) {
+  try {
+    let ip = req.headers["x-forwarded-for"] || req.connection.remoteAddress;
+    ip = ip.toString();
+    let res = await axios.get(
       `http://api.ipstack.com/${ip}?access_key=a1d5abe0fd6709ed6ee80744cc29def2`
-    )
-    .then(response => {
-      // handle success
-      //   console.log(response.data.latitude, response.data.longitude);
+    );
+    if (res) {
       return {
-        lat: response.data.latitude,
-        lng: response.data.longitude,
+        lat: res.data.latitude,
+        lng: res.data.longitude,
       };
-    })
-    .catch(function(error) {
-      // handle error
-      console.log(error);
-    });
-};
+    }
+  } catch (err) {
+    console.log(err);
+  }
+}
 
 function calculateDistance(lat1, lng1, lat2, lng2) {
   var radlat1 = (Math.PI * lat1) / 180;
@@ -82,32 +78,20 @@ server.post("/api/search", (req, res) => {
     );
     return;
   }
-  let loc = { lat: 0, lng: 0 };
-  getLatLng(req)
-    .then(res => {
-      console.log("res", res);
-      loc = res;
-    })
-    .catch(err => {
-      console.log(err);
-    });
   const queryCapitalized = query.charAt(0).toUpperCase() + query.slice(1);
   let filteredArr = [];
   filteredArr = countryArr
     .map(country => searchCountry(country, queryCapitalized))
-    .filter(item => item)
-    .sort((item1, item2) => {
-      console.log(loc.lat, loc.lng);
-      return (
-        calculateDistance(item1.lat, item1.lng, loc.lat, loc.lng) -
-        calculateDistance(item2.lat, item2.lng, loc.lat, loc.lng)
-      );
-    });
-  // .map(item => {
-  //   console.log(item);
-  //   item.d = calculateDistance(item.lat, item.lng, loc.lat, loc.lng);
-  //   return item;
-  // });
+    .filter(item => item);
+
+  let loc = getLatLng(req);
+
+  filteredArr = filteredArr.sort((item1, item2) => {
+    return (
+      calculateDistance(item1.lat, item1.lng, loc.lat, loc.lng) -
+      calculateDistance(item2.lat, item2.lng, loc.lat, loc.lng)
+    );
+  });
 
   res.status(201).json(filteredArr);
 });
