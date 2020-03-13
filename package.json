@@ -1,11 +1,21 @@
 {
   "name": "countryBE",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "npx nodemon server.js"
+  },
   "repository": "https://github.com/samarv/countryBE.git",
   "author": "samarvir <samarvir1996@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "axios": "^0.19.2",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
     "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.2"
   }
 }
