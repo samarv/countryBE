@@ -2,13 +2,14 @@ const express = require("express");
 const cors = require("cors");
 const fs = require("fs");
 const axios = require("axios");
+require("dotenv").config();
 
 let rawdata = fs.readFileSync("./countries_metadata.json");
 let countries = JSON.parse(rawdata);
 countryArr = countries.countries;
 
 const server = express();
-var port = 5555;
+const port = process.env.PORT || 5000;
 server.use(cors());
 server.use(express.json());
 
